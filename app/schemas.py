@@ -60,3 +60,5 @@ class ComplaintOut(BaseModel):
 
 class ComplaintDetail(ComplaintOut):
     status_history: list[StatusHistoryOut]
+
+UrgencyName = Literal["low", "medium", "high", "emergency"]
