@@ -1,0 +1,23 @@
+# AI / agent
+langchain
+langchain-groq
+langgraph
+python-dotenv
+
+# Backend
+fastapi
+uvicorn[standard]
+pydantic
+
+# Database
+sqlalchemy
+pymysql
+cryptography
+
+# Frontend
+streamlit
+requests
+
+# Testing
+pytest
+httpx
