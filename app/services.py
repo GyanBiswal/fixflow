@@ -269,3 +269,22 @@ def update_status(
     db.commit()
     db.refresh(complaint)
     return complaint
+
+
+def find_open_duplicate(
+    db: Session, reporter_name: str, location: str, description: str
+) -> Complaint | None:
+    """Finds an identical complaint (same person, place and text) that is not resolved yet.
+    Used to stop double-clicks from creating two complaints."""
+    query = (
+        select(Complaint)
+        .where(
+            Complaint.reporter_name == reporter_name,
+            Complaint.location == location,
+            Complaint.description == description,
+            Complaint.status != STATUS_RESOLVED,
+        )
+        .order_by(Complaint.id)
+        .limit(1)
+    )
+    return db.scalars(query).first()

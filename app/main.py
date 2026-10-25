@@ -7,18 +7,19 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.database import engine
-from app.routes import complaints, technicians
+from app.routes import complaints, technicians, workflow
 
 logger = logging.getLogger("fixflow")
 
 app = FastAPI(
     title="FixFlow API",
-    version="0.1.0",
+    version="0.2.0",
     description="AI-powered maintenance coordination agent (backend).",
 )
 
 app.include_router(complaints.router)
 app.include_router(technicians.router)
+app.include_router(workflow.router)
 
 
 @app.exception_handler(SQLAlchemyError)

@@ -1,5 +1,5 @@
 """Complaint endpoints. They validate input, call the service layer, and translate errors."""
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -29,7 +29,13 @@ def to_http_error(error: services.ServiceError) -> HTTPException:
 
 
 @router.post("", response_model=ComplaintOut, status_code=201)
-def create_complaint(data: ComplaintCreate, db: Session = Depends(get_db)):
+def create_complaint(data: ComplaintCreate, response: Response, db: Session = Depends(get_db)):
+    """Creates a complaint. If an identical unresolved one exists (a double-click), returns it
+    with status 200 instead of creating a duplicate."""
+    duplicate = services.find_open_duplicate(db, data.reporter_name, data.location, data.description)
+    if duplicate is not None:
+        response.status_code = 200
+        return duplicate
     return services.create_complaint(db, data.reporter_name, data.location, data.description)
 
 
