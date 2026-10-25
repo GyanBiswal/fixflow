@@ -46,11 +46,11 @@ class TriageResult(BaseModel):
 
 
 class ClassifyInput(BaseModel):
-    description: str = Field(min_length=3, max_length=2000)
+    description: str = Field(min_length=3, max_length=3000)
 
 
 class SafetyInput(BaseModel):
-    description: str = Field(min_length=1, max_length=2000)
+    description: str = Field(min_length=1, max_length=3000)
     llm_urgency: UrgencyName | None = Field(
         default=None, description="Urgency suggested by the LLM, if available"
     )

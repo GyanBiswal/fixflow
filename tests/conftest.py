@@ -3,6 +3,7 @@ import pytest
 from sqlalchemy.orm import Session
 
 from app.database import engine
+from app.tools import db_tools
 
 
 @pytest.fixture
@@ -23,3 +24,18 @@ def db_session():
         session.close()
         outer_transaction.rollback()
         connection.close()
+
+
+@pytest.fixture
+def use_test_session(db_session, monkeypatch):
+    """Makes the database tools use the test session (rolled back) instead of a real one."""
+
+    class _SessionContext:
+        def __enter__(self):
+            return db_session
+
+        def __exit__(self, *args):
+            return False
+
+    monkeypatch.setattr(db_tools, "SessionLocal", lambda: _SessionContext())
+    return db_session
